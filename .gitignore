@@ -1,0 +1,17 @@
+# Sensitive configs
+*.yml
+*.yaml
+*.json
+*.pem
+*.key
+*.crt
+*.db
+.env
+payloads/
+venv/
+__pycache__/
+*.log
+*.csv
+*.pcap
+*.zip
+
