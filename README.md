@@ -28,10 +28,6 @@ The system integrates open-source controllers, model-driven APIs, and real-time 
 
 ## Architecture
 
-<p align="center">
-  <img src="figures/architecture.png" width="85%" alt="NOVA Architecture"/>
-</p>
-
 The NOVA framework follows a hierarchical architecture consisting of three controllers:
 
 1. **Hierarchical SDN Controller (H-SDNC)** – top-level RESTCONF orchestrator coordinating all services  
