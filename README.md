@@ -1,6 +1,6 @@
 # NOVA – Open IP-over-DWDM Orchestration Framework
 
-![Logo](figures/nova_logo.png)
+![Logo](figures/Logo.png)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17546361.svg)](https://doi.org/10.5281/zenodo.17546361)  
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)  
