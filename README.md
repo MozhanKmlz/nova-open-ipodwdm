@@ -18,7 +18,7 @@ The system integrates open-source controllers, model-driven APIs, and real-time 
 **Main Features**
 
 - Unified service automation across OpenROADM and OpenConfig devices  
-- Multi-vendor support (Cisco, NEC, Ciena, Fujitsu, Anritsu)  
+- Multi-vendor support  
 - OpenConfig lookup engine for version-consistent YANG payloads  
 - gNMI-based telemetry streaming to Prometheus and Grafana  
 - MongoDB persistence for payloads and configuration state  
