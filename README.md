@@ -32,10 +32,10 @@ The NOVA framework follows a hierarchical architecture consisting of three contr
 
 1. **Hierarchical SDN Controller (H-SDNC)** – top-level RESTCONF orchestrator coordinating all services  
 2. **End Terminal Controller (ETC)** – manages routers, muxponders, and test sets using OpenConfig models  
-3. **ROADM Network Controller (RNC)** – controls ROADMs and amplifiers through the open-source TransportPCE (TPCE)
+3. **ROADM Network Controller (RNC)** – controls ROADMs through the open-source TransportPCE (TPCE)
 
 All modules communicate through open APIs and event-driven Kafka notifications.  
-Telemetry runs in parallel via containerized gNMIc collectors and Prometheus exporters.
+Telemetry runs in parallel via containerized gNMIc and NETCONF-based collectors and Prometheus exporters.
 
 ---
 
