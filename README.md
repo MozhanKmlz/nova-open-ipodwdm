@@ -63,7 +63,7 @@ python app.py```
 The orchestrator will be available at:
 http://localhost:5000
 
-
+---
 ## USAGE
 NOVA exposes two main orchestration endpoints:
 
