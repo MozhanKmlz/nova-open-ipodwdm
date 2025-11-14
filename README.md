@@ -46,25 +46,21 @@ All modules use model-driven APIs: RESTCONF, NETCONF, and gNMI. Kafka-based noti
 ## Installation
 
 Clone the repository:
-
 ```bash
 git clone https://github.com/MozhanKmlz/nova-open-ipodwdm.git
 cd nova-open-ipodwdm
 
 
 Install dependencies:
-
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt ```
 
 
 Run the orchestrator:
-
 ```bash
 python app.py
 
 The orchestrator will be available at:
-
 http://localhost:5000
 
 
