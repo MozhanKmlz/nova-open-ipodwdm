@@ -49,77 +49,90 @@ Clone the repository:
 ```bash
 git clone https://github.com/MozhanKmlz/nova-open-ipodwdm.git
 cd nova-open-ipodwdm
+```
+
 Install dependencies:
-
-bash
-Copy code
+```bash
 pip install -r requirements.txt
-Run the orchestrator:
+```
 
-bash
-Copy code
+Run the orchestrator:
+```bash
 python app.py
+```
 The orchestrator will be available at:
 http://localhost:5000
 
 ## USAGE
 NOVA exposes two main orchestration endpoints:
-
+```bash
 POST /create-service
+```
 Executes the full workflow: performance info, temporary service creation, end terminal activation, service creation, and power setup.
 
+```bash
 POST /delete-service
+```
 Executes end terminal deactivation followed by service deletion.
 
 Create a Service
-bash
-Copy code
+```bash
 curl -X POST http://localhost:5000/create-service \
      -H "Content-Type: application/json" \
      -d '{
-           "vendor": "cisco",
-           "component-name": "OpticalChannel0/0/0/20",
-           "frequency": 193100000000,
-           "TxPower": -3
+           "vendor": "vendor",
+           "component-name": "component-name",
+           "frequency": 196081250000,
+           "TxPower": 3
          }'
+```
+
 Delete a Service
-bash
-Copy code
+```bash
 curl -X POST http://localhost:5000/delete-service \
      -H "Content-Type: application/json" \
      -d '{
            "vendor": "cisco",
            "component-name": "OpticalChannel0/0/0/20",
            "frequency": 193100000000,
-           "TxPower": -30
+           "TxPower": -10
          }'
+```
 Note: Both endpoints require vendor, component-name, frequency, and TxPower because the activation and deactivation RPCs depend on them.
 
-Configuration
+---
+## Configuration
 Configuration files are stored under:
-
-arduino
-Copy code
+```bash 
 utility/config/
-Included files:
+```
 
+Included files:
+```bash
 ipsdnc.yaml
+```
 Vendor-specific OpenConfig controller settings
 
+```bash
 rnc.yaml
-ROADM/TPCE controller configuration
+```
 
+ROADM/TPCE controller configuration
+```bash
 kafka.yaml
+```
 Kafka consumer parameters
 
 Payload files are retrieved from MongoDB using:
-
-bash
-Copy code
+```bash
 infra/persistence/repository.py
-Telemetry Pipeline
-Supported telemetry mechanisms:
+```
 
+---
+
+## Telemetry Pipeline
+Supported telemetry mechanisms:
+```bash
 gNMI streaming using gNMIc
 
 NETCONF exporters
@@ -127,34 +140,21 @@ NETCONF exporters
 Prometheus scraping
 
 Grafana dashboards for visualization
+```
+--- 
 
-Available telemetry metrics:
-
-Input and output optical power
-
-OSNR
-
-ESNR
-
-Chromatic dispersion
-
-Laser bias current
-
-Polarization-dependent loss
-
-Optical frequency and baud rate
-
-Project Structure
-graphql
-Copy code
+## Project Structure
+```
 nova-open-ipodwdm/
 │
-├── orchestrator/        # NOVA top-level controller (H-SDNC)
-├── controllers/         # Vendor ETC and RNC controller implementations
-├── routes/              # HTTP API endpoints
-├── utility/             # Helper functions and OpenConfig lookup engine
-├── infra/               # MongoDB repository and storage logic
-├── kafka_notif/         # Kafka consumer for TPCE events
-└── app.py               # Application entry point
-License
+├── orchestrator/ # NOVA top-level controller (H-SDNC)
+├── controllers/ # Vendor ETC and RNC controller implementations
+├── routes/ # HTTP API endpoints
+├── utility/ # Helper functions and OpenConfig lookup engine
+├── infra/ # MongoDB repository and storage logic
+├── kafka_notif/ # Kafka consumer for TPCE events
+└── app.py # Application entry point
+```
+---
+
 This project is released under the MIT License. See the LICENSE file for more details.
