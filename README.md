@@ -75,7 +75,7 @@ POST /delete-service
 ```
 Executes end terminal deactivation followed by service deletion.
 
-Create a Service
+### Create a Service
 ```bash
 curl -X POST http://localhost:5000/create-service \
      -H "Content-Type: application/json" \
@@ -87,7 +87,7 @@ curl -X POST http://localhost:5000/create-service \
          }'
 ```
 
-Delete a Service
+### Delete a Service
 ```bash
 curl -X POST http://localhost:5000/delete-service \
      -H "Content-Type: application/json" \
