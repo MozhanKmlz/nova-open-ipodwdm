@@ -47,7 +47,7 @@ Clone the repository:
 git clone https://github.com/MozhanKmlz/nova-open-ipodwdm.git
 cd nova-open-ipodwdm
 
-## 🚀 Usage
+## Usage
 
 NOVA exposes two high-level orchestration endpoints for managing end-to-end IP-over-DWDM services:
 
@@ -58,7 +58,7 @@ NOVA exposes two high-level orchestration endpoints for managing end-to-end IP-o
 
 ---
 
-## 📡 Create a Service
+## Create a Service
 
 ```bash
 curl -X POST http://localhost:5000/create-service \
