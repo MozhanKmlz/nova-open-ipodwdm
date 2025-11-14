@@ -46,3 +46,27 @@ Clone the repository:
 ```bash
 git clone https://github.com/MozhanKmlz/nova-open-ipodwdm.git
 cd nova-open-ipodwdm
+
+## 🚀 Usage
+
+NOVA exposes two high-level orchestration endpoints for managing end-to-end IP-over-DWDM services:
+
+- **`POST /create-service`** – executes the full workflow:  
+  performance info → temporary service → activation → service creation → power setup  
+- **`POST /delete-service`** – executes the teardown workflow:  
+  deactivation → service deletion
+
+---
+
+## 📡 Create a Service
+
+```bash
+curl -X POST http://localhost:5000/create-service \
+     -H "Content-Type: application/json" \
+     -d '{
+           "vendor": "cisco",
+           "component-name": "OpticalChannel0/0/0/20",
+           "frequency": 193100000000,
+           "TxPower": -3
+         }'
+
