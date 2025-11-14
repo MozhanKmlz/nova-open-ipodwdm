@@ -49,21 +49,18 @@ Clone the repository:
 ```bash
 git clone https://github.com/MozhanKmlz/nova-open-ipodwdm.git
 cd nova-open-ipodwdm
-
-
 Install dependencies:
-```bash
-pip install -r requirements.txt 
 
-
+bash
+Copy code
+pip install -r requirements.txt
 Run the orchestrator:
-```bash
-python app.py
 
+bash
+Copy code
+python app.py
 The orchestrator will be available at:
 http://localhost:5000
-
----
 
 ## USAGE
 NOVA exposes two main orchestration endpoints:
