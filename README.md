@@ -1,41 +1,45 @@
-# <img src="figures/Logo.png" align="right" height="80"/> NOVA – Open IP-over-DWDM Orchestration Framework
+# NOVA – Open IP-over-DWDM Orchestration Framework
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17546361.svg)](https://doi.org/10.5281/zenodo.17546361)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 [![GitHub release](https://img.shields.io/github/v/release/MozhanKmlz/nova-open-ipodwdm)](https://github.com/MozhanKmlz/nova-open-ipodwdm/releases)
 ![Cited By](https://img.shields.io/badge/Cited_by-0_papers-blue.svg)
 ![Last Commit](https://img.shields.io/github/last-commit/MozhanKmlz/nova-open-ipodwdm?color=blue)
 ![Stars](https://img.shields.io/github/stars/MozhanKmlz/nova-open-ipodwdm?style=social)
 
+---
+
 ## Introduction
 
-**NOVA** (*Network Orchestration, Vigilance, and Automation*) is an open-source orchestration framework that unifies **OpenConfig** and **OpenROADM** specifications to automate end-to-end IP-over-DWDM (IPoDWDM) service creation, deletion, and telemetry collection across **multi-vendor optical transport networks**.
+NOVA (Network Orchestration, Vigilance, and Automation) is an open-source orchestration framework that unifies OpenConfig and OpenROADM specifications to automate end-to-end IP-over-DWDM (IPoDWDM) service creation, deletion, and telemetry collection across multi-vendor optical transport networks.
 
-This framework was developed at *The University of Texas at Dallas* and experimentally validated in a live multi-vendor testbed, demonstrating fully automated provisioning and telemetry between client devices and ROADMs. NOVA supports reproducible open research for disaggregated optical networks.
+It has been validated in a multi-vendor testbed at The University of Texas at Dallas, enabling reproducible research in disaggregated optical networking.
 
-The system integrates open-source controllers, model-driven APIs, and real-time observability pipelines for deterministic, transparent, and vendor-agnostic orchestration.
+### Key Features
 
-**Main Features**
-
-- Unified service automation across OpenROADM and OpenConfig devices  
-- Multi-vendor support  
-- OpenConfig lookup engine for version-consistent YANG payloads  
-- gNMI-based telemetry streaming to Prometheus and Grafana  
-- MongoDB persistence for payloads and configuration state  
-- Extensible open-source architecture for reproducible research  
+- Unified orchestration across OpenROADM and OpenConfig
+- Full automation for service creation and teardown
+- Multi-vendor support (Cisco, NEC, Anritsu, etc.)
+- OpenConfig lookup engine ensuring version-consistent payloads
+- gNMI-based telemetry ingestion compatible with Prometheus and Grafana
+- MongoDB-based persistence for payloads and device metadata
+- Modular structure suitable for research, demos, and production-like environments
 
 ---
 
 ## Architecture
 
-The NOVA framework follows a hierarchical architecture consisting of three controllers:
+NOVA is composed of three main modules:
 
-1. **Hierarchical SDN Controller (H-SDNC)** – top-level RESTCONF orchestrator coordinating all services  
-2. **End Terminal Controller (ETC)** – manages routers, muxponders, and test sets using OpenConfig models  
-3. **ROADM Network Controller (RNC)** – controls ROADMs through the open-source TransportPCE (TPCE)
+1. Hierarchical SDN Controller (H-SDNC)  
+   Coordinates all service-related operations
 
-All modules communicate through open APIs and event-driven Kafka notifications.  
-Telemetry runs in parallel via containerized gNMIc and NETCONF-based collectors and Prometheus exporters.
+2. End Terminal Controller (ETC)  
+   Manages routers, muxponders, and test equipment through OpenConfig
+
+3. ROADM Network Controller (RNC)  
+   Communicates with ROADMs via TransportPCE (TPCE)
+
+All modules use model-driven APIs: RESTCONF, NETCONF, and gNMI. Kafka-based notifications provide asynchronous event updates.
 
 ---
 
@@ -46,21 +50,33 @@ Clone the repository:
 ```bash
 git clone https://github.com/MozhanKmlz/nova-open-ipodwdm.git
 cd nova-open-ipodwdm
+Install dependencies:
 
-## Usage
+bash
+Copy code
+pip install -r requirements.txt
+Run the orchestrator:
 
-NOVA exposes two high-level orchestration endpoints for managing end-to-end IP-over-DWDM services:
+bash
+Copy code
+python app.py
+The orchestrator will be available at:
 
-- **`POST /create-service`** – executes the full workflow:  
-  performance info → temporary service → activation → service creation → power setup  
-- **`POST /delete-service`** – executes the teardown workflow:  
-  deactivation → service deletion
+arduino
+Copy code
+http://localhost:5000
+Usage
+NOVA exposes two main orchestration endpoints:
 
----
+POST /create-service
+Executes the full workflow: performance info, temporary service creation, end terminal activation, service creation, and power setup.
 
-## Create a Service
+POST /delete-service
+Executes end terminal deactivation followed by service deletion.
 
-```bash
+Create a Service
+bash
+Copy code
 curl -X POST http://localhost:5000/create-service \
      -H "Content-Type: application/json" \
      -d '{
@@ -69,4 +85,79 @@ curl -X POST http://localhost:5000/create-service \
            "frequency": 193100000000,
            "TxPower": -3
          }'
+Delete a Service
+bash
+Copy code
+curl -X POST http://localhost:5000/delete-service \
+     -H "Content-Type: application/json" \
+     -d '{
+           "vendor": "cisco",
+           "component-name": "OpticalChannel0/0/0/20",
+           "frequency": 193100000000,
+           "TxPower": -30
+         }'
+Note: Both endpoints require vendor, component-name, frequency, and TxPower because the activation and deactivation RPCs depend on them.
 
+Configuration
+Configuration files are stored under:
+
+arduino
+Copy code
+utility/config/
+Included files:
+
+ipsdnc.yaml
+Vendor-specific OpenConfig controller settings
+
+rnc.yaml
+ROADM/TPCE controller configuration
+
+kafka.yaml
+Kafka consumer parameters
+
+Payload files are retrieved from MongoDB using:
+
+bash
+Copy code
+infra/persistence/repository.py
+Telemetry Pipeline
+Supported telemetry mechanisms:
+
+gNMI streaming using gNMIc
+
+NETCONF exporters
+
+Prometheus scraping
+
+Grafana dashboards for visualization
+
+Available telemetry metrics:
+
+Input and output optical power
+
+OSNR
+
+ESNR
+
+Chromatic dispersion
+
+Laser bias current
+
+Polarization-dependent loss
+
+Optical frequency and baud rate
+
+Project Structure
+graphql
+Copy code
+nova-open-ipodwdm/
+│
+├── orchestrator/        # NOVA top-level controller (H-SDNC)
+├── controllers/         # Vendor ETC and RNC controller implementations
+├── routes/              # HTTP API endpoints
+├── utility/             # Helper functions and OpenConfig lookup engine
+├── infra/               # MongoDB repository and storage logic
+├── kafka_notif/         # Kafka consumer for TPCE events
+└── app.py               # Application entry point
+License
+This project is released under the MIT License. See the LICENSE file for more details.
