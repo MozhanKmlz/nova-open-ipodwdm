@@ -76,19 +76,99 @@ class NOVAOrchestrator:
             # 1) performance info
             eti = self._as_json(self.ipsdnc.end_terminal_performance_info_request())
 
-            # 2) temp service
-            tmp = self._as_json(self.rnc.temp_service_create())
+            try:
+                tmp = self._as_json(self.rnc.temp_service_create())
+            except Exception as e:
+                # Inform user immediately, clean output
+                return jsonify({
+                    "error": "Temporary service creation failed",
+                    "details": str(e)
+                }), 400
 
-            # 3) activation (reads JSON from the *current* request)
-            act = self._as_json(self.ipsdnc.end_terminal_activation_request())
+            # 3) Activate terminals — MAY FAIL → MUST ROLLBACK
+            try:
+                act = self._as_json(self.ipsdnc.end_terminal_activation_request())
+            except Exception as e:
+                # --- ROLLBACK TEMPORARY OPTICAL TUNNEL ---
+                try:
+                    rollback = self._as_json(self.rnc.optical_tunnel_request_cancel())
+                except Exception as re:
+                    rollback = {"error": f"Rollback failed: {str(re)}"}
+    
+                return jsonify({
+                    "error": "Activation failed",
+                    "details": str(e),
+                    "rollback": rollback,
+                }), 400
 
-            # 4) real service-create
-            svc = self._as_json(self.rnc.service_create())
+            # ------------------------------------------------------------
+            # Helper: Full rollback after activation
+            # (used for service-create failure or power failures)
+            # ------------------------------------------------------------
+            def full_post_activation_rollback():
+                results = {}
+    
+                # deactivate both A/Z terminals
+                try:
+                    results["deactivation"] = self._as_json(
+                        self.ipsdnc.end_terminal_deactivation_request()
+                    )
+                except Exception as e:
+                    results["deactivation_error"] = str(e)
+    
+                # cancel optical tunnel
+                try:
+                    results["optical_cancel"] = self._as_json(
+                        self.rnc.optical_tunnel_request_cancel()
+                    )
+                except Exception as e:
+                    results["optical_cancel_error"] = str(e)
+    
+                return results
 
-            # 5) power setups
-            pwrA = self._as_json(self.rnc.service_power_setup(which="A"))
-            pwrZ = self._as_json(self.rnc.service_power_setup(which="B"))
+            # ------------------------------------------------------------
+            # 4) Service-create (rollback: deactivation + optical cancel)
+            # ------------------------------------------------------------
+            try:
+                svc = self._as_json(self.rnc.service_create())
+            except Exception as e:
+                rollback = full_post_activation_rollback()
+                return jsonify({
+                    "error": "Service creation failed",
+                    "details": str(e),
+                    "rollback": rollback
+                }), 400
 
+            # 5) Power setup A (failure → rollback)
+            try:
+                pwrA = self._as_json(self.rnc.service_power_setup(which="A"))
+            except Exception as e:
+                try:
+                    rollback = full_post_activation_rollback()
+                except Exception as re:
+                    rollback = {"error": f"Rollback failed: {str(re)}"}
+
+                return jsonify({
+                    "error": "Power setup failed at A-end",
+                    "details": str(e),
+                    "rollback": rollback
+                }), 400
+
+            # 6) Power setup Z (failure → rollback)
+            try:
+                pwrZ = self._as_json(self.rnc.service_power_setup(which="B"))
+            except Exception as e:
+                try:
+                    rollback = full_post_activation_rollback()
+                except Exception as re:
+                    rollback = {"error": f"Rollback failed: {str(re)}"}
+
+                return jsonify({
+                    "error": "Power setup failed at Z-end",
+                    "details": str(e),
+                    "rollback": rollback
+                }), 400
+                
             return jsonify({
                 "end_terminal_performance_info":   eti,
                 "temporary_service_creation":      tmp,
@@ -115,4 +195,5 @@ class NOVAOrchestrator:
         except Exception as e:
             logging.exception("delete_service failed")
             return jsonify({"error": str(e)}), 500
+
 
