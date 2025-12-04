@@ -396,22 +396,22 @@ class ConcreteIPSDNCController(IPSDNCController):
             return jsonify({"error": str(e), "conf_log": conf_log}), 500
 
 
-class AnritsuController(ConcreteIPSDNCController):
+class vendorCController(ConcreteIPSDNCController):
     def __init__(self, config: dict, with_mgr=None):
-        logger.info("[Init] AnritsuController created")
+        logger.info("[Init] vendorCController created")
         super().__init__(config)
 
     def post_activate_A(self):
-        logger.info("[Hook] Anritsu post_activate_A")
+        logger.info("[Hook] vendorC post_activate_A")
         self._measurement_on(self.ipA)
     def post_activate_B(self):
-        logger.info("[Hook] Anritsu post_activate_B")
+        logger.info("[Hook] vendorC post_activate_B")
         self._measurement_on(self.ipB)
     def post_deactivate_A(self):
-        logger.info("[Hook] Anritsu post_deactivate_A")
+        logger.info("[Hook] vendorC post_deactivate_A")
         self._measurement_off(self.ipA)
     def post_deactivate_B(self):
-        logger.info("[Hook] Anritsu post_deactivate_B")
+        logger.info("[Hook] vendorC post_deactivate_B")
         self._measurement_off(self.ipB)
     def _measurement_on(self, ip: str):
         logger.info("[Hook] Measurement ON at %s", ip)
@@ -425,20 +425,20 @@ class AnritsuController(ConcreteIPSDNCController):
             m.edit_config(target="running", config=xml); m.commit()
 
 
-class NECController(ConcreteIPSDNCController):
+class vendorBController(ConcreteIPSDNCController):
     def __init__(self, config: dict, with_mgr=None):
-        logger.info("[Init] NECController created")
+        logger.info("[Init] vendorBController created")
         super().__init__(config)
         if not (self.jump_host and self.jump_user and self.jump_pass):
-            raise RuntimeError("Jump host credentials missing for NEC")
+            raise RuntimeError("Jump host credentials missing for vendorB")
 
     def _alloc_port(self) -> int:
         s = socket.socket(); s.bind(("", 0)); port = s.getsockname()[1]; s.close()
-        logger.debug("[NEC] Allocated local port %s for tunnel", port)
+        logger.debug("[vendorB] Allocated local port %s for tunnel", port)
         return port
 
     def _ensure_tunnel(self, dst_host: str, dst_port: int = 830) -> int:
-        logger.info("[NEC] Establishing tunnel to %s:%s via jump %s", dst_host, dst_port, self.jump_host)
+        logger.info("[vendorB] Establishing tunnel to %s:%s via jump %s", dst_host, dst_port, self.jump_host)
         local_port = self._alloc_port()
         cmd = (
             "sshpass -p '{pwd}' ssh "
