@@ -19,12 +19,9 @@ REF_VER_RE = re.compile(r'reference\s+"([^"]+)"')
 class OpenConfigLookup:
     def __init__(self):
         # Build both maps at init:
-        #  - self._rev_map:      {"openconfig-platform": {"YYYY-MM-DD": "X.Y.Z", ...}}
-        #  - self._version_tags: {"X.Y.Z": "vN.N.N", ...}
         self._rev_map = {"openconfig-platform": {}}
         self._version_tags = {}
 
-        # Prefer deriving from tags (most accurate); fallback to HEAD if needed.
         built_from_tags = self._build_from_tags()
         if not built_from_tags:
             self._build_from_head_fallback()
@@ -32,14 +29,12 @@ class OpenConfigLookup:
         logger.debug("[Lookup] rev→version map: %s", self._rev_map["openconfig-platform"])
         logger.debug("[Lookup] version→tag map: %s", self._version_tags)
 
-    # ---- Public API ---------------------------------------------------------
-
     def get_version_by_revision(self, module: str, revision_date: str):
-        """Return OpenConfig version for a module + revision date."""
+        """Returns OpenConfig version for a module + revision date"""
         return self._rev_map.get(module, {}).get(revision_date)
 
     def get_latest_version(self, module: str):
-        """Return the latest known version for this module by max revision date."""
+        """Returns the latest known version for this module by max revision date"""
         rev_map = self._rev_map.get(module, {})
         if not rev_map:
             return None
@@ -47,7 +42,7 @@ class OpenConfigLookup:
         return rev_map[latest_rev]
 
     def get_tag_for_version(self, version: str):
-        """Return Git tag corresponding to an OpenConfig version (if known)."""
+        """Returns Git tag corresponding to an OpenConfig version (if known)"""
         return self._version_tags.get(version)
 
     # ---- Builders -----------------------------------------------------------
@@ -57,7 +52,7 @@ class OpenConfigLookup:
         Build:
           - revision→version for openconfig-platform
           - version→tag
-        by iterating over OpenConfig repo tags and parsing the file at each tag.
+        by iterating over OpenConfig repo tags and parsing the file at each tag
         """
         if not OPENCONFIG_REPO.exists():
             logger.warning("[Lookup] OpenConfig repo not found at %s", OPENCONFIG_REPO)
@@ -80,19 +75,19 @@ class OpenConfigLookup:
                     # Some older tags or different layouts might not have this file
                     continue
 
-                # Extract version (oc-ext is authoritative at this tag)
+                # Extracts version (oc-ext is authoritative at this tag)
                 ver = self._extract_oc_version(text)
                 if not ver:
                     # Fallback to 'reference "X.Y.Z"' if present
                     ver = self._extract_ref_version(text)
 
-                # Extract the *top* (most recent) revision date in that file at this tag
+                # Extracts the *top* (most recent) revision date in that file at this tag
                 rev = self._extract_top_revision(text)
 
                 if ver and rev:
                     # Map revision→version
                     self._rev_map["openconfig-platform"][rev] = ver
-                    # Map version→tag (first match wins; keep earliest semver mapping)
+                    # Map version→tag (first match wins)
                     self._version_tags.setdefault(ver, tag)
 
             return bool(self._rev_map["openconfig-platform"])
@@ -102,8 +97,8 @@ class OpenConfigLookup:
 
     def _build_from_head_fallback(self):
         """
-        Fallback: parse the file at HEAD (current checkout) just to get
-        some revision→version mapping if tags are unavailable.
+        Fallback: parses the file at HEAD (current checkout) just to get
+        some revision→version mapping if tags are unavailable
         """
         path = OPENCONFIG_REPO / OC_PLATFORM_YANG
         if not path.exists():
@@ -116,13 +111,13 @@ class OpenConfigLookup:
             logger.warning("[Lookup] Could not read fallback file %s: %s", path, e)
             return
 
-        # Get a single version value (oc-ext preferred)
+        # Gets a single version value (oc-ext preferred)
         ver = self._extract_oc_version(text) or self._extract_ref_version(text)
         if not ver:
             logger.warning("[Lookup] No version found in fallback HEAD file")
             return
 
-        # Map *all* revisions present in the file to that version (best-effort)
+        # Maps *all* revisions present in the file to that version (best-effort)
         for rev in REV_RE.findall(text):
             self._rev_map["openconfig-platform"][rev] = ver
 
@@ -144,8 +139,7 @@ class OpenConfigLookup:
 
     def _extract_ref_version(self, text: str) -> Optional[str]:
         """
-        Some files put the semver inside `reference "X.Y.Z"`; if the reference
-        contains extra words, keep only the X.Y.Z-like token.
+        If the reference contains extra words, keep only the X.Y.Z-like token.
         """
         m = REF_VER_RE.search(text)
         if not m:
@@ -157,7 +151,7 @@ class OpenConfigLookup:
     def _extract_top_revision(self, text: str) -> Optional[str]:
         """
         Returns the first (topmost) revision date in the file text, which
-        corresponds to the most recent revision as of that tag.
+        corresponds to the most recent revision as of that tag
         """
         m = REV_RE.search(text)
         return m.group(1) if m else None
