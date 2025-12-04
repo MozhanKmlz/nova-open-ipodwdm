@@ -6,8 +6,8 @@ logger = logging.getLogger(__name__)
 
 def _norm_vendor_block(name, sec):
     d = {k.lower(): v for k, v in sec.items()}
-    if name == "nec":
-        # normalize NEC keys to routerA/routerB naming your code expects
+    if name == "vendorB":
+        # normalize vendorB keys to routerA/routerB naming your code expects
         d["routera_ip"]   = d.pop("mpdra_ip",   d.get("routera_ip", ""))
         d["routera_user"] = d.pop("mpdra_user", d.get("routera_user", ""))
         d["routera_pass"] = d.pop("mpdra_pass", d.get("routera_pass", ""))
@@ -35,7 +35,6 @@ def load_ipsdnc_config(path: str="config/ipsdnc.conf"):
             continue
         base["vendors"][name] = _norm_vendor_block(name, cfg[sec])
 
-    # For convenience, also expose the active vendor block at top-level:
     active = base["vendor"]
     if active and active in base["vendors"]:
         base.update(base["vendors"][active])
@@ -46,8 +45,8 @@ def load_ipsdnc_config(path: str="config/ipsdnc.conf"):
     
 def _read_ini_lower(path: str) -> dict:
     """
-    Read an INI file and return a dict of sections -> dict of options,
-    with all keys normalized to lowercase (to avoid configparser case issues).
+    Reads an INI file and returns a dict of sections -> dict of options,
+    with all keys normalized to lowercase (to avoid configparser case issues)
     """
     ini = configparser.ConfigParser()
     p = Path(path)
@@ -93,8 +92,8 @@ def load_rnc_config(path: str="config/rnc.conf"):
 
 def load_kafka_config(path: str = "config/kafka.conf"):
     """
-    Load Kafka consumer config from an INI file.
-    Returns a dict with typed values and sensible defaults.
+    Loads Kafka consumer config from an INI file
+    Returns a dict with typed values and sensible defaults
     """
     exists = Path(path).exists()
     logger.debug(f"Loading Kafka config from {path} (exists={exists})")
@@ -109,7 +108,6 @@ def load_kafka_config(path: str = "config/kafka.conf"):
 
     s = cfg["default"]
 
-    # Typed getters with defaults
     def _getbool(key, default):
         try:
             return s.getboolean(key, fallback=default)
@@ -143,4 +141,3 @@ def load_kafka_config(path: str = "config/kafka.conf"):
         raise ValueError(f"kafka.conf missing keys: {', '.join(missing)}")
 
     return d
-
