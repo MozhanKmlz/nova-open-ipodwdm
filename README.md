@@ -34,9 +34,10 @@ NOVA is composed of three main modules:
    Coordinates all service-related operations
 
 2. End Terminal Controller (ETC) / IP Software Defined Networking Controller (IPSDNC)
+   
    Manages routers, muxponders, and test equipment through OpenConfig
 
-3. ROADM Network Controller (RNC)  
+4. ROADM Network Controller (RNC)  
    Communicates with ROADMs via TransportPCE (TPCE)
 
 All modules use model-driven APIs: RESTCONF, NETCONF, and gNMI. Kafka-based notifications provide asynchronous event updates.
