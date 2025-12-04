@@ -7,7 +7,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# Path to your cloned OpenConfig repo (with tags), e.g. ~/NOVA_OO/openconfig-public
+# Path to your cloned OpenConfig repo (with tags), e.g. ~/nova-open-ipodwdm/openconfig-public
 OPENCONFIG_REPO = Path(__file__).parent.parent / "openconfig-public"
 # File we care about inside that repo
 OC_PLATFORM_YANG = "release/models/platform/openconfig-platform.yang"
