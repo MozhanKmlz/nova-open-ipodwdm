@@ -36,7 +36,6 @@ class ConcreteRNCController(RNCController):
         return (self._connect_timeout, self._timeout_heavy)
 
     def _resp_to_dict(self, resp):
-        # Unwrap tuples like (Response, status[, headers])
         if isinstance(resp, tuple):
             resp = resp[0]
         if isinstance(resp, Response):
@@ -45,10 +44,8 @@ class ConcreteRNCController(RNCController):
             except Exception:
                 logger.exception("Failed to decode Flask Response to JSON")
                 return {}
-        # Already a dict?
         if isinstance(resp, dict):
             return resp
-        # Last resort
         try:
             return json.loads(str(resp))
         except Exception:
@@ -59,7 +56,6 @@ class ConcreteRNCController(RNCController):
         resp.status_code = status
         return resp
 
-    # --- satisfy abstract method from RNCController ---
     def connect_to_tpce(self):
         """
         Establish connection path to TPCE.
@@ -303,3 +299,4 @@ class ConcreteRNCController(RNCController):
         except Exception as e:
             logger.error(f"Failed to process the request: {e}")
             return jsonify({"error": str(e)}), 400
+
