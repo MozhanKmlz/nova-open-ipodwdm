@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use NOVA or parts of this repository, please cite the following work."
+title: "NOVA – Open IP-over-DWDM Orchestration Framework"
+authors:
+  - family-names: Kamalzadeh
+    given-names: Moojan
+  - family-names: Latha
+    given-names: Aparaajitha Gomathinayakam
+  - family-names: Zhang
+    given-names: Tianliang
+  - family-names: Horner
+    given-names: Larry J.
+  - family-names: Fumagalli
+    given-names: Andrea
+keywords:
+  - IPoDWDM
+  - OpenROADM
+  - OpenConfig
+  - SDN
+  - multi-vendor
+  - orchestration
+  - optical networking
+license: "MIT"
+repository-code: "https://github.com/MozhanKmlz/nova-open-ipodwdm"
+doi: ""
+preferred-citation:
+  type: article
+  title: "Open Multi-Layer Orchestration Framework for Multi-Vendor IPoDWDM Transport Networks"
+  authors:
+    - family-names: Kamalzadeh
+      given-names: Moojan
+    - family-names: Latha
+      given-names: Aparaajitha Gomathinayakam
+    - family-names: Zhang
+      given-names: Tianliang
+    - family-names: Horner
+      given-names: Larry J.
+    - family-names: Fumagalli
+      given-names: Andrea
+  year: 2025
+  journal: "To appear"
