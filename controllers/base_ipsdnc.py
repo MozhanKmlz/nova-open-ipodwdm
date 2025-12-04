@@ -458,11 +458,11 @@ class vendorBController(ConcreteIPSDNCController):
 
         subprocess.run(cmd, shell=True, check=True)
         time.sleep(1.0)
-        # logger.info("[NEC] Tunnel ready on local port %s", local_port)
+        # logger.info("[vendorB] Tunnel ready on local port %s", local_port)
         return local_port
 
     def _connect(self, ip: str):
-        logger.info("[NEC] Connecting through tunnel to %s", ip)
+        logger.info("[vendorB] Connecting through tunnel to %s", ip)
         lp = self._ensure_tunnel(ip, 830)
         u, p = self._credA if ip == self.ipA else self._credB
         return manager.connect(host="localhost", port=lp, username=u, password=p,
