@@ -10,7 +10,7 @@
 
 ## Introduction
 
-NOVA (Network Orchestration, Vigilance, and Automation) is an open-source orchestration framework that unifies OpenConfig and OpenROADM specifications to automate end-to-end IP-over-DWDM (IPoDWDM) service creation, deletion, and telemetry collection across multi-vendor optical transport networks.
+NOVA (Network Orchestration, Vigilance, and Automation) is an open-source orchestration framework that unifies OpenConfig and OpenROADM specifications to automate end-to-end Internet Protocol-over-Dense Wavelength Division Multiplexing (IPoDWDM) service creation, deletion, and telemetry collection across multi-vendor optical transport networks.
 
 It has been validated in a multi-vendor testbed at The University of Texas at Dallas, enabling reproducible research in disaggregated optical networking.
 
@@ -18,7 +18,7 @@ It has been validated in a multi-vendor testbed at The University of Texas at Da
 
 - Unified orchestration across OpenROADM and OpenConfig
 - Full automation for service creation and teardown
-- Multi-vendor support (Cisco, NEC, Anritsu, etc.)
+- Multi-vendor support
 - OpenConfig lookup engine ensuring version-consistent payloads
 - gNMI-based telemetry ingestion compatible with Prometheus and Grafana
 - MongoDB-based persistence for payloads and device metadata
@@ -33,7 +33,7 @@ NOVA is composed of three main modules:
 1. Hierarchical SDN Controller (H-SDNC)  
    Coordinates all service-related operations
 
-2. End Terminal Controller (ETC)  
+2. End Terminal Controller (ETC) / IP Software Defined Networking Controller (IPSDNC)
    Manages routers, muxponders, and test equipment through OpenConfig
 
 3. ROADM Network Controller (RNC)  
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 
 Run the orchestrator:
 ```bash
-python app.py
+python3.6 app.py
 ```
 The orchestrator will be available at:
 http://localhost:5000
@@ -80,7 +80,7 @@ Executes end terminal deactivation followed by service deletion.
 curl -X POST http://localhost:5000/create-service \
      -H "Content-Type: application/json" \
      -d '{
-           "vendor": "vendor",
+           "vendor": "#vendor",
            "component-name": "component-name",
            "frequency": 196081250000,
            "TxPower": 3
@@ -92,41 +92,13 @@ curl -X POST http://localhost:5000/create-service \
 curl -X POST http://localhost:5000/delete-service \
      -H "Content-Type: application/json" \
      -d '{
-           "vendor": "cisco",
+           "vendor": "#vendor",
            "component-name": "OpticalChannel0/0/0/20",
            "frequency": 193100000000,
            "TxPower": -10
          }'
 ```
 Note: Both endpoints require vendor, component-name, frequency, and TxPower because the activation and deactivation RPCs depend on them.
-
----
-## Configuration
-Configuration files are stored under:
-```bash 
-utility/config/
-```
-
-Included files:
-```bash
-ipsdnc.yaml
-```
-Vendor-specific OpenConfig controller settings
-
-```bash
-rnc.yaml
-```
-
-ROADM/TPCE controller configuration
-```bash
-kafka.yaml
-```
-Kafka consumer parameters
-
-Payload files are retrieved from MongoDB using:
-```bash
-infra/persistence/repository.py
-```
 
 ---
 
