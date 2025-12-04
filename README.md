@@ -129,4 +129,14 @@ nova-open-ipodwdm/
 ```
 ---
 
+## Citation
+
+NOVA supports reproducible research in multi-vendor optical networking.  
+Users of this framework are kindly asked to cite the following paper in any published work that builds upon this code:
+
+**M. Kamalzadeh, A. G. Latha, T. Zhang, L. J. Horner, and A. Fumagalli,  
+“Open Multi-Layer Orchestration Framework for Multi-Vendor IPoDWDM Transport Networks.”**
+
+The complete citation record is provided in the `CITATION.cff` file.
+
 This project is released under the MIT License. See the LICENSE file for more details.
