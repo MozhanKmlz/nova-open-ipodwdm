@@ -1,4 +1,4 @@
-import importlib
+orimport importlib
 from flask import Flask, request
 from utility.config_loader import load_ipsdnc_config, load_rnc_config, load_kafka_config
 from utility.utils import *
@@ -13,7 +13,7 @@ class VendorDispatchIPSDNC:
     def __init__(self, base_cfg):
         self.base_cfg = base_cfg
         self._cache = {}
-        self._default_vendor = (base_cfg.get("vendor") or "cisco").strip().lower()
+        self._default_vendor = (base_cfg.get("vendor") or "vendorA").strip().lower()
 
     def _resolve_class(self, dotted: str):
         if not dotted:
