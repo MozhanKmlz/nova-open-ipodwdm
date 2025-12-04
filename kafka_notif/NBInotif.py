@@ -39,7 +39,7 @@ class KafkaNotifier:
         self._running = False
 
     def start(self) -> None:
-        """Start the Kafka consumer in a background thread."""
+        """Starts the Kafka consumer in a background thread"""
         if self._running:
             logger.warning("KafkaNotifier already running")
             return
@@ -54,14 +54,14 @@ class KafkaNotifier:
         )
 
     def stop(self, timeout: float = 5.0) -> None:
-        """Signal the consumer loop to stop and wait for the thread to join."""
+        """Signals the consumer loop to stop and wait for the thread to join"""
         self._running = False
         if self._thread:
             self._thread.join(timeout)
             logger.info("KafkaNotifier stopped")
 
     def _consume_loop(self) -> None:
-        """Internal loop: poll Kafka and push messages to the queue."""
+        """Internal loop: polls Kafka and pushes messages to the queue"""
         try:
             self._consumer = KafkaConsumer(
                 self.topic,
@@ -92,13 +92,13 @@ class KafkaNotifier:
                 pass
 
 
-# Optional module-level singleton holder so app code can remain simple.
+# Optional module-level singleton holder so app code can remain simple
 _notifier: Optional[KafkaNotifier] = None
 
 
 def create_notifier_from_config(cfg: Dict) -> KafkaNotifier:
     """
-    Factory to build a KafkaNotifier from the dict returned by load_kafka_config().
+    Factory to build a KafkaNotifier from the dict returned by load_kafka_config()
     """
     return KafkaNotifier(
         broker=cfg["broker"],
@@ -112,7 +112,7 @@ def create_notifier_from_config(cfg: Dict) -> KafkaNotifier:
 
 def start_kafka_consumer(cfg: Dict) -> None:
     """
-    Start the Kafka consumer based on config.
+    Starts the Kafka consumer based on the config
     Safe to call more than once; it won’t start duplicate threads.
     """
     global _notifier
@@ -126,8 +126,9 @@ def start_kafka_consumer(cfg: Dict) -> None:
 
 def stop_kafka_consumer(timeout: float = 5.0) -> None:
     """
-    Stop the background consumer (if running).
+    Stops the background consumer (if running)
     """
     global _notifier
     if _notifier is not None:
         _notifier.stop(timeout)
+
