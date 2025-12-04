@@ -160,8 +160,8 @@ class ConcreteRNCController(RNCController):
             logger.error("REST error %s: %s", e.response.status_code, e.response.text)
             return self._err(f"REST {e.response.status_code}: {e.response.reason}", 400)
         except Exception as e:
-            logger.error(f"Failed to process the request: {e}")
-            return self._err(str(e), 400)
+            logger.error(f"TEMP SERVICE CREATE FAILED — PROCESS ABORTED: {e}")
+            raise RuntimeError(f"temp-service-create failed: {str(e)}")
 
     def temp_service_list(self):
         try:
@@ -299,4 +299,5 @@ class ConcreteRNCController(RNCController):
         except Exception as e:
             logger.error(f"Failed to process the request: {e}")
             return jsonify({"error": str(e)}), 400
+
 
